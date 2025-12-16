@@ -1,0 +1,15 @@
+.box form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem 2rem;
+  align-items: center;
+  margin-bottom: 10px;
+}
+.box form :last-child{
+  display: center;
+  transform: translate(-60%, 200px);
+}
+.result {
+  font-size: 70px;
+  margin-top: 0;
+}
