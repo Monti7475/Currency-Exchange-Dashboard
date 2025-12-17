@@ -107,10 +107,10 @@ function Box() {
 
       
     </div>
-            {mode=='show' && <List rates={rates} mayor={mayor_currencies}/>}
+            {mode=='show' && amount && <List rates={rates} mayor={mayor_currencies}/>}
     <div >
       {
-        mode == 'convert' &&
+        mode == 'convert' && amount &&
     <p>
       Converted Amount:<br/> <p className='result'>{result}</p>
     </p>
