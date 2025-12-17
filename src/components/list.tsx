@@ -14,9 +14,9 @@ function List({rates, mayor}: rateProps) {
     <ul>
             {Object.entries(rates)
             .filter(([a]) => mayor.includes(a))
-            .map(([abv]) => (
+            .map(([abv, value]) => (
             <li key={abv} value={abv}>
-              {abv} - {rates[abv]}
+              {abv} - {value}
             </li>
             ))}
       </ul>
