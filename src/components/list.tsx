@@ -1,26 +1,31 @@
 import './list.css'
 
-type rateProps = {
-  rates: object,
-  mayor: Array<string>,
+type RateProps = {
+  rates: Record<string, number>
+  mayor: string[]
 }
 
-function List({rates, mayor}: rateProps) {
-
-
-
+function List({ rates, mayor }: RateProps) {
   return (
-    <>
-    <ul>
-            {Object.entries(rates)
-            .filter(([a]) => mayor.includes(a))
-            .map(([abv, value]) => (
-            <li key={abv} value={abv}>
-              {abv} - {value}
-            </li>
-            ))}
-      </ul>
-    </>
+    <table className="rates-table">
+      <thead>
+        <tr>
+          <th>Currency</th>
+          <th>Rate</th>
+        </tr>
+      </thead>
+      <tbody>
+        {Object.entries(rates)
+          .filter(([abv]) => mayor.includes(abv))
+          .map(([abv, value]) => (
+            <tr key={abv}>
+              <td>{abv}</td>
+              <td>{value}</td>
+            </tr>
+          ))}
+      </tbody>
+    </table>
   )
 }
+
 export default List
