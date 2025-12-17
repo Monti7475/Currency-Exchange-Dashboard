@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios';
+import List from './list';
 import './box.css'
 
 function omit<T extends object, K extends keyof T>(
@@ -106,21 +107,16 @@ function Box() {
       
       </form>
 
-      <ul>
-            {Object.entries(rates)
-            .filter(([a]) => mayor_currencies.includes(a))
-            .map(([abv]) => (
-            <li key={abv} value={abv}>
-              {abv} - {rates[abv]}
-            </li>
-            ))}
-      </ul>
+      
     </div>
-    
+            {mode=='show' && <List rates={rates} mayor={mayor_currencies}/>}
     <div >
+      {
+        mode == 'convert' &&
     <p>
       Converted Amount:<br/> <p className='result'>{result}</p>
     </p>
+      }
   </div>
     </>
   )
