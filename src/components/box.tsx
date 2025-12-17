@@ -2,14 +2,22 @@ import { useState, useEffect } from 'react'
 import axios from 'axios';
 import './box.css'
 
-
-
+function omit<T extends object, K extends keyof T>(
+  obj: T,
+  key: K
+): Omit<T, K> {
+  const { [key]: _, ...rest } = obj;
+  return rest;
+}
 function Box() {
-    const [data, setData] = useState([]);
+    const [rates, setRates] = useState({});
+    const [currencies, setCurrencies] = useState([]);
     const [result, setResult] = useState(0.0);
     const [amount, setAmount] = useState('');
     const [from, setFrom] = useState('USD')
     const [to, setTo] = useState('USD')
+    const [mode, setMode] = useState('')
+    const mayor_currencies = ['USD', 'EUR', 'GBP', 'JPY', 'CHF', 'AUD', 'CAD', 'CNY', 'HKD', 'SGD', 'NZD']
     const api = axios.create(
       {
         baseURL: 'https://api.frankfurter.dev/v1'
@@ -18,32 +26,47 @@ function Box() {
       useEffect(()  => {
         const fetchData = async () => {
           const response = await api.get('/currencies')
-          setData(response.data);
+          setCurrencies(response.data);
           //console.log(data);
           //console.log("SUS");
         }
         fetchData();
   }, []);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) =>  {
     e.preventDefault();
-    
-    if (!amount || Number.isNaN(amount)) return;
-    
-    if (to == from) setResult(Number(amount));
+    if (mode == 'convert'){
 
-    try {const res = await api.get('/latest', {
-      params: {
-        from: from,
-        to: to
-      },
-    })
-    setResult(res.data.rates[to]);
-  }catch(e){
-      console.log(e);
-      console.log(from);
+      if (!amount || Number.isNaN(amount)) return;
+      
+      if (to == from) setResult(Number(amount));
+  
+      try {const res = await api.get('/latest', {
+        params: {
+          from: from,
+          to: to
+        },
+      })
+      setResult(res.data.rates[to]);
+    }catch(e){
+        console.log(e);
+        console.log(from);
+      }
+      
+    }else if (mode == 'show'){
+      try {const res = await api.get('/latest', {
+        params: {
+          from: from
+        },
+      })
+      setRates(omit(res.data.rates, from))
+
+
+    }catch(e){
+        console.log(e);
+        console.log(from);
+      }
     }
-    
   }
 
 
@@ -56,23 +79,42 @@ function Box() {
         <label>Base</label>
         <label>Target</label>
         <input type='text' value={amount} onChange={(e) => setAmount(e.target.value)}></input>
+        <p></p>
         <select value={from} onChange={(e) => setFrom(e.target.value)}>
-            {Object.entries(data).map(([abv, name]) => (
+            {Object.entries(currencies).map(([abv, name]) => (
             <option key={abv} value={abv}>
               {abv} — {name}
             </option>
             ))}
         </select>
         <select value={to} onChange={(e) => setTo(e.target.value)}>
-            {Object.entries(data).map(([abv, name]) => (
+            {Object.entries(currencies).map(([abv, name]) => (
               <option key={abv} value={abv}>
               {abv} — {name}
             </option>
             ))}
         </select>
-        <button type="submit">Convert</button>
-      </form> 
+        <button type="submit" onClick={() => setMode('show')}>Show</button>
+        <button type="submit" onClick={() => setMode('convert')}>Convert</button>
+       
+       
+       
+       
+       {/*  list starts here */}
+      
+      
+      
+      </form>
 
+      <ul>
+            {Object.entries(rates)
+            .filter(([a]) => mayor_currencies.includes(a))
+            .map(([abv]) => (
+            <li key={abv} value={abv}>
+              {abv} - {rates[abv]}
+            </li>
+            ))}
+      </ul>
     </div>
     
     <div >
