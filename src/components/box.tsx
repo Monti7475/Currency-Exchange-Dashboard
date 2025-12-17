@@ -100,8 +100,6 @@ function Box() {
        
        
        
-       
-       {/*  list starts here */}
       
       
       
